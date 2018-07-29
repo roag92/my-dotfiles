@@ -1,1 +1,0 @@
-/home/ricardo/.config/fisherman/z/functions/__z_clean.fish

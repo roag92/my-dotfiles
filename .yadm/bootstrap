@@ -1,36 +1,35 @@
 #!/bin/bash
 
-# Navigate to root of yadm repository.
-cd "$HOME"
+# Exist command
+function exist_command () {
+  command -v "$1" >/dev/null 2>&1
+}
 
-# Set up submodules.
-echo ":: Initialize submodules..."
-yadm submodule update --recursive --init
-
-system_type=$(uname -s)
-
-# Linux section
-
-if [ "$system_type" = "Linux" ]; then
-
-  if ! command -v vim >/dev/null 2>&1; then
-    echo "Installing vim"
-    sudo apt-get install vim
+# Install function
+function install() {
+  echo "Installing $1"
+  if [ "$system_type" = "Darwin" ]; then
+    brew install $1
   fi
+  if [ "$system_type" = "Linux" ]; then
+    sudo apt-get install $1
+  fi
+}
 
-  if ! command -v vim >/dev/null 2>&1; then
-    echo "Installing fish"
-    sudo apt-get install fish
+# Config fish
+function config_fish() {
+  echo "Configuring $1"
+  if [ "$system_type" = "Darwin" ]; then
+    chsh -s /usr/local/bin/fish
+  fi
+  if [ "$system_type" = "Linux" ]; then
     chsh -s /usr/bin/fish
   fi
+}
 
-fi
-
-# MacOs section
-
-if [ "$system_type" = "Darwin" ]; then
-
-  if ! command -v brew >/dev/null 2>&1; then
+# Pre-install dependencies in MacOS
+function pre_install_mac_os() {
+  if ! exist_command brew; then
     echo "Installing homebrew"
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
@@ -45,35 +44,66 @@ if [ "$system_type" = "Darwin" ]; then
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$HOME/.iterm2"
   fi
 
-  if ! command -v curl >/dev/null 2>&1; then
+  if ! exist_command curl; then
     brew install curl
   fi
 
-  if ! command -v vim >/dev/null 2>&1; then
-    echo "Installing vim"
-    brew install vim
+  if ! exist_command vim; then
+    install vim
   fi
 
-  if ! command -v fish >/dev/null 2>&1; then
-    echo "Installing fish"
-    brew install fish
-    chsh -s /usr/local/bin/fish
+  if ! exist_command fish; then
+    install fish
+    config_fish
+  fi
+}
+
+# Bootrsaping plugins (vim, fisher)
+function bootstrap_plugins() {
+  if exist_command vim; then
+    echo "Bootstraping vim"
+    vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
   fi
 
-fi
+  if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
+    echo "Installing fisher"
+    curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubusercontent.com/fisherman/fisherman/master/fisher.fish
+    fisher z fzf edc/bass
+  fi
 
-# Install plugins
+  if [ -f "$HOME/.config/fish/functions/fisher.fish" ]; then
+    echo "Bootstraping fisher"
+    fish
+    fisher update
+  fi
 
-if command -v vim >/dev/null 2>&1; then
-  echo "Bootstraping vim"
-  vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
-fi
+}
 
-if command -v fish >/dev/null 2>&1 and && ! command -v fisher >/dev/null 2>&1;then
-  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubusercontent.com/fisherman/fisherman/master/fisher.fish
-fi
+function start() {
+  # Navigate to root of yadm repository.
+  cd "$HOME"
 
-if command -v fisher >/dev/null 2>&1;then
-  echo "Bootstraping fisher"
-  fisher update
-fi
+  # Set up submodules.
+  echo "Initialize submodules"
+  yadm submodule update --recursive --init
+
+  # Getting OS
+  system_type=$(uname -s)
+
+  if [ "$system_type" = "Darwin" ]; then
+    pre_install_mac_os
+  fi
+
+  if ! exist_command vim; then
+    install vim
+  fi
+
+  if ! exist_command fish; then
+    install fish
+    config_fish
+  fi
+
+  bootstrap_plugins
+}
+
+start
