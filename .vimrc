@@ -1,13 +1,13 @@
 call plug#begin('~/.vim/plugged')
 
-" Matherial theme
+" https://github.com/kristijanhusak/vim-hybrid-material
 Plug 'kristijanhusak/vim-hybrid-material'
 
-" Vin Airline
-Plug 'vim-airline/vim-airline'
+" " https://github.com/scrooloose/nerdtree
+Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
-" NERD tree will be loaded on the first invocation of NERDTreeToggle command
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+" " https://github.com/vim-airline/vim-airline
+Plug 'vim-airline/vim-airline'
 
 call plug#end()
 
