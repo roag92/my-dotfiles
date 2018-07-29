@@ -1,3 +1,79 @@
 #!/bin/bash
 
-echo "Test File"
+# Navigate to root of yadm repository.
+cd "$HOME"
+
+# Set up submodules.
+echo ":: Initialize submodules..."
+yadm submodule update --recursive --init
+
+system_type=$(uname -s)
+
+# Linux section
+
+if [ "$system_type" = "Linux" ]; then
+
+  if ! command -v vim >/dev/null 2>&1; then
+    echo "Installing vim"
+    sudo apt-get install vim
+  fi
+
+  if ! command -v vim >/dev/null 2>&1; then
+    echo "Installing fish"
+    sudo apt-get install fish
+    chsh -s /usr/bin/fish
+  fi
+
+fi
+
+# MacOs section
+
+if [ "$system_type" = "Darwin" ]; then
+
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Installing homebrew"
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
+  if [ -f "$HOME/.Brewfile" ]; then
+    echo "Updating homebrew bundle"
+    brew bundle --global
+  fi
+
+  if [ -d "$HOME/.iterm2" ]; then
+    echo "Setting iTerm preference folder"
+    defaults write com.googlecode.iterm2 PrefsCustomFolder "$HOME/.iterm2"
+  fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    brew install curl
+  fi
+
+  if ! command -v vim >/dev/null 2>&1; then
+    echo "Installing vim"
+    brew install vim
+  fi
+
+  if ! command -v fish >/dev/null 2>&1; then
+    echo "Installing fish"
+    brew install fish
+    chsh -s /usr/local/bin/fish
+  fi
+
+fi
+
+# Install plugins
+
+if command -v vim >/dev/null 2>&1; then
+  echo "Bootstraping vim"
+  vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
+fi
+
+if command -v fish >/dev/null 2>&1 and && ! command -v fisher >/dev/null 2>&1;then
+  curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubusercontent.com/fisherman/fisherman/master/fisher.fish
+fi
+
+if command -v fisher >/dev/null 2>&1;then
+  echo "Bootstraping fisher"
+  fisher update
+fi

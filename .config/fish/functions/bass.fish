@@ -1,0 +1,1 @@
+/home/ricardo/.config/fisherman/bass/functions/bass.fish
