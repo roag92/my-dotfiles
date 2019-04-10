@@ -21,4 +21,4 @@ yadm clone git@github.com:roag92/mydotfiles.git
 
 > __Note__: _If you want to trigger the bootstrap script you can run it like this: `~/.yadm/bootstrap`_.
 
-> __Important__: _Generated in `elementary OS 0.4.1 Loki`_.
+> __Important__: _Generated in `Ubuntu 18.04 LTS`_.

@@ -94,6 +94,10 @@ function start() {
     pre_install_mac_os
   fi
 
+  if ! exist_command terminator; then
+    install terminator
+  fi
+
   if ! exist_command vim; then
     install vim
   fi
