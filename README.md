@@ -8,6 +8,7 @@ These are my dotfiles using [YADM](https://github.com/TheLocehiliosan/yadm).
  - vim
  - fish
  - curl
+ - terminator
  - brew (MacOS)
 
 ## Install Dotfiles
