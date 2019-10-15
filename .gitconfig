@@ -3,4 +3,4 @@
 	name = Ricardo Roman
 [core]
 	editor = vim
-	excludesfile = .gitignore
+	excludesfile = ~/.gitignore
