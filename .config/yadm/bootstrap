@@ -44,7 +44,7 @@ function pre_install_mac_os() {
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$HOME/.iterm2"
   fi
   
-  for command in curl vim fish; do
+  for command in curl vim fzf fd bat fish; do
     if ! exist_command $command; then
       install $command
       if [ $command = fish ]; then
@@ -55,7 +55,7 @@ function pre_install_mac_os() {
 }
 
 function pre_install_linux() {
-  for command in curl vim terminator ; do
+  for command in curl vim terminator fzf fd-find bat fish; do
     if ! exist_command $command; then
       install $command
       if [$command = fish]; then
@@ -65,12 +65,20 @@ function pre_install_linux() {
   done
 }
 
-# Bootrsaping plugins (vim, fisher)
+# Bootrsaping plugins (fisher, vim)
 function bootstrap_plugins() {
   if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
     echo "Installing fisher"
-    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
-    fisher install edc/bass
+    curl -sL https://git.io/fisher | source && \
+    	fisher install jorgebucaran/fisher \
+    		jethrokuan/z \
+		edc/bass \
+		jorgebucaran/fish-bax \
+		danhper/fish-ssh-agent \
+		jorgebucaran/nvm.fish \
+		franciscolourenco/done \
+		jethrokuan/fzf \
+		hauleth/agnoster
   fi
 
   if [ -f "$HOME/.config/fish/functions/fisher.fish" ]; then
@@ -81,7 +89,7 @@ function bootstrap_plugins() {
 
   if exist_command vim; then
     echo "Bootstraping vim"
-    vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
+    vim +'PlugInstall --sync' +qa
   fi
 }
 
