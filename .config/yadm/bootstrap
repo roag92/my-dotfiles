@@ -12,7 +12,7 @@ function install() {
     brew install $1
   fi
   if [ "$system_type" = "Linux" ]; then
-    sudo apt-get install $1
+    sudo apt install $1
   fi
 }
 
@@ -43,19 +43,26 @@ function pre_install_mac_os() {
     echo "Setting iTerm preference folder"
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$HOME/.iterm2"
   fi
+  
+  for command in curl vim fish; do
+    if ! exist_command $command; then
+      install $command
+      if [ $command = fish ]; then
+        config_fish
+      fi
+    fi
+  done
+}
 
-  if ! exist_command curl; then
-    brew install curl
-  fi
-
-  if ! exist_command vim; then
-    install vim
-  fi
-
-  if ! exist_command fish; then
-    install fish
-    config_fish
-  fi
+function pre_install_linux() {
+  for command in curl vim terminator ; do
+    if ! exist_command $command; then
+      install $command
+      if [$command = fish]; then
+        config_fish
+      fi
+    fi
+  done
 }
 
 # Bootrsaping plugins (vim, fisher)
@@ -93,18 +100,9 @@ function start() {
   if [ "$system_type" = "Darwin" ]; then
     pre_install_mac_os
   fi
-
-  if ! exist_command terminator; then
-    install terminator
-  fi
-
-  if ! exist_command vim; then
-    install vim
-  fi
-
-  if ! exist_command fish; then
-    install fish
-    config_fish
+  
+  if [ "$system_type" = "Linux" ]; then
+    pre_install_linux
   fi
 
   bootstrap_plugins
