@@ -67,15 +67,10 @@ function pre_install_linux() {
 
 # Bootrsaping plugins (vim, fisher)
 function bootstrap_plugins() {
-  if exist_command vim; then
-    echo "Bootstraping vim"
-    vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
-  fi
-
   if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
     echo "Installing fisher"
-    curl -Lo ~/.config/fish/functions/fisher.fish --create-dirs https://raw.githubusercontent.com/fisherman/fisherman/master/fisher.fish
-    fisher z fzf edc/bass
+    curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+    fisher install edc/bass
   fi
 
   if [ -f "$HOME/.config/fish/functions/fisher.fish" ]; then
@@ -84,6 +79,10 @@ function bootstrap_plugins() {
     fisher update
   fi
 
+  if exist_command vim; then
+    echo "Bootstraping vim"
+    vim '+PlugUpdate' '+PlugClean!' '+PlugUpdate' '+qall'
+  fi
 }
 
 function start() {
