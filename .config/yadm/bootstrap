@@ -55,7 +55,7 @@ function pre_install_mac_os() {
 }
 
 function pre_install_linux() {
-  for command in curl vim terminator fzf fd-find bat fish; do
+  for command in python3-pip curl vim terminator fzf fd-find bat fish; do
     if ! exist_command $command; then
       install $command
       if [$command = fish]; then
@@ -63,6 +63,11 @@ function pre_install_linux() {
       fi
     fi
   done
+  
+  if exist_command terminator; then
+    mkdir -p $HOME/.config/terminator/plugins
+    wget https://git.io/v5Zww -O $HOME"/.config/terminator/plugins/terminator-themes.py"
+  fi
 }
 
 # Bootrsaping plugins (fisher, vim)

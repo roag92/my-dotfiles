@@ -1,25 +1,20 @@
 # My Dotfiles
 
-These are my dotfiles using [YADM](https://github.com/TheLocehiliosan/yadm).
+These are my dotfiles using [YADM](https://github.com/TheLocehiliosan/yadm) in `Ubuntu 20.04 LTS`.
 
 ## Requirements
 
  - yadm
- - vim
- - fish
- - curl
- - terminator
- - brew (MacOS)
 
-## Install Dotfiles
+> __Important__: For MacOs we need `brew`
+
+## Usage
 
 ```bash
-# the flag -f overwrite our dotfiles
+# adding the flag -f will overwrite our current dotfiles
 yadm clone git@github.com:roag92/mydotfiles.git
+
+# only if you want to execute the bootstrap script
+~/.config/yadm/bootstrap
 ```
 
----
-
-> __Note__: _If you want to trigger the bootstrap script you can run it like this: `~/.yadm/bootstrap`_.
-
-> __Important__: _Generated in `Ubuntu 18.04 LTS`_.
