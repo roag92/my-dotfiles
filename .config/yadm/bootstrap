@@ -20,7 +20,10 @@ function install() {
 function config_fish() {
   echo "Configuring $1"
   if [ "$system_type" = "Darwin" ]; then
-    chsh -s /usr/local/bin/fish
+    fish
+    fish_add_path /opt/homebrew/bin
+    echo "/opt/homebrew/bin/fish" | sudo tee -a /etc/shells
+    chsh -s /opt/homebrew/bin/fish
   fi
   if [ "$system_type" = "Linux" ]; then
     chsh -s /usr/bin/fish
@@ -44,7 +47,7 @@ function pre_install_mac_os() {
     defaults write com.googlecode.iterm2 PrefsCustomFolder "$HOME/.iterm2"
   fi
   
-  for command in curl vim fzf fd bat fish; do
+  for command in eza fish font-fira-code font-fira-code-nerd-font bat git-delta z vcs; do
     if ! exist_command $command; then
       install $command
       if [ $command = fish ]; then
@@ -74,16 +77,23 @@ function pre_install_linux() {
 function bootstrap_plugins() {
   if [ ! -f "$HOME/.config/fish/functions/fisher.fish" ]; then
     echo "Installing fisher"
-    curl -sL https://git.io/fisher | source && \
-    	fisher install jorgebucaran/fisher \
-    		jethrokuan/z \
-		edc/bass \
-		jorgebucaran/fish-bax \
-		danhper/fish-ssh-agent \
-		jorgebucaran/nvm.fish \
-		franciscolourenco/done \
-		jethrokuan/fzf \
-		hauleth/agnoster
+
+    if [ "$system_type" = "Darwin" ]; then
+      install fisher
+    fi
+
+    if [ "$system_type" = "Linux" ]; then
+      curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+    fi
+
+    fisher install jorgebucaran/fisher \
+      jethrokuan/z \
+		  edc/bass \
+		  danhper/fish-ssh-agent \
+		  jorgebucaran/nvm.fish \
+		  franciscolourenco/done \
+		  jethrokuan/fzf \
+	  	hauleth/agnoster
   fi
 
   if [ -f "$HOME/.config/fish/functions/fisher.fish" ]; then

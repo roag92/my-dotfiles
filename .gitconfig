@@ -1,6 +1,17 @@
 [user]
-	email = ricardo.roman.ag@gmail.com
 	name = Ricardo Roman
+	email = ricardo.roman.ag@gmail.com
 [core]
-	editor = vim
-	excludesfile = ~/.gitignore
+    pager = delta --features "$(defaults read -globalDomain AppleInterfaceStyle &> /dev/null && echo default || echo GitHub)"
+[interactive]
+    diffFilter = delta --color-only
+[add.interactive]
+    useBuiltin = false
+[delta]
+    navigate = true
+    light = false
+	side-by-side = true
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default
